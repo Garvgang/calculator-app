@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<script>
+    async function calculate(operation) {
+        const a = document.getElementById('first').value;
+        const b = document.getElementById('second').value;
+
+        if (a === "" || b === "") {
+            document.getElementById('response').innerHTML = "⚠️ Enter both numbers";
+            return;
+        }
+
+        const res = await fetch(`http://localhost:3000/${operation}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ a, b })
+        });
+
+        const json = await res.json();
+
+        document.getElementById('response').innerHTML = json.ans;
+    }
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const toggleBtn = document.getElementById("toggleTheme");
+
+    toggleBtn.addEventListener("click", () => {
+        document.body.classList.toggle("light");
+
+        toggleBtn.textContent =
+            document.body.classList.contains("light") ? "☀️" : "🌙";
+    });
+});
+</script>
+
+<body>
+    <div class="calculator">
+        <button id="toggleTheme" class="toggle-btn">🌙</button>
+        <h1>Calculator</h1>
+        <input id="first" type="text" placeholder="First number">
+        <input id="second" type="text" placeholder="Second number">
+        <div class="buttons">
+            <button onclick="calculate('sum')">Add</button>
+            <button onclick="calculate('sub')">Sub</button>
+            <button onclick="calculate('mul')">Mul</button>
+            <button onclick="calculate('div')">Div</button>
+        </div>
+
+        <h2 id="response"></h2>
+    </div>
+</body>
+
+</html>
